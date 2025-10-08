@@ -1,2 +1,4 @@
-Host: www
-Points to: https://grand-bublanina-f1dc46.netlify.app/
+    Host: www.dogtaleskennels.co.ke
+    Type: CNAME (recommended for subdomains)
+    Points to: https://dogtales.github.io/main/
+    TTL: 14400 (or your registrar's default)
