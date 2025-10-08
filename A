@@ -1,0 +1,8 @@
+    Host: @
+    Type: A
+    Points to:
+        185.199.108.153
+        185.199.109.153
+        185.199.110.153
+        185.199.111.153
+    TTL: 14400 (or your registrar's default)
