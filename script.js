@@ -1,141 +1,175 @@
-const images = document.querySelectorAll('.image-container img');
+// --- Mobile Navigation ---
+const hamburger = document.querySelector('.hamburger');
+const navMenu = document.querySelector('.nav-menu');
 
-let currentIndex = 0;
+hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('active');
+});
 
-function changeImage() {
-    images[currentIndex].classList.remove('active');
-    currentIndex = (currentIndex + 1) % images.length;
-    images[currentIndex].classList.add('active');
-}
+document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+    });
+});
 
-setInterval(changeImage, 4000);
+// --- Scroll Effect for Header ---
+window.addEventListener('scroll', () => {
+    const header = document.querySelector('.header');
+    if (window.scrollY > 50) {
+        header.style.boxShadow = "0 2px 10px rgba(0,0,0,0.2)";
+    } else {
+        header.style.boxShadow = "0 2px 5px rgba(0,0,0,0.1)";
+    }
+});
 
-// HERO IMAGE CAROUSEL WITH PAN EFFECT
-const heroImages = document.querySelectorAll('.hero .image-container img');
+// --- Breeds Carousel Infinite Scroll (Clone Logic) ---
+const track = document.querySelector('.carousel-track');
+// Cloning for smoother infinite loop visual is handled by CSS animation in this version,
+// but doubling content helps gapless loop.
+const slides = Array.from(track.children);
+slides.forEach(slide => {
+    const clone = slide.cloneNode(true);
+    track.appendChild(clone);
+});
 
+
+// --- HERO CAROUSEL WITH PAN EFFECT (Handles Images AND Video) ---
+// Updated selector to target both img and video
+const heroMedia = document.querySelectorAll('.hero .image-container img, .hero .image-container video');
 let heroIndex = 0;
 
-function changeHeroImage() {
-    heroImages[heroIndex].classList.remove('active');
-    heroIndex = (heroIndex + 1) % heroImages.length;
-    heroImages[heroIndex].classList.add('active');
+function changeHeroMedia() {
+    // Remove active class from current
+    heroMedia[heroIndex].classList.remove('active');
+    
+    // Calculate next index
+    heroIndex = (heroIndex + 1) % heroMedia.length;
+    
+    // Add active class to next
+    const currentItem = heroMedia[heroIndex];
+    currentItem.classList.add('active');
+
+    // If it's a video, ensure it plays
+    if (currentItem.tagName === 'VIDEO') {
+        currentItem.play().catch(e => console.log("Auto-play prevented:", e));
+    }
 }
 
-setInterval(changeHeroImage, 4000);
+// Change hero media every 5 seconds
+setInterval(changeHeroMedia, 5000);
 
-// FILM STRIP CAROUSELS WITH PAN EFFECT
+
+// --- FILM STRIP CAROUSELS WITH PAN EFFECT (Handles Images AND Video) ---
 document.querySelectorAll('.film-strip').forEach(filmStrip => {
-    const imgs = filmStrip.querySelectorAll('img');
+    // Select both images and videos
+    const mediaItems = filmStrip.querySelectorAll('img, video');
     let idx = 0;
 
-    // Set the width of the film strip based on the number of images
-    filmStrip.style.width = `${imgs.length * 250}px`; // Assuming each image is 250px wide
+    // Set the width of the film strip based on the number of items
+    // IMPORTANT: CSS forces videos to be 250px wide to match this calculation
+    filmStrip.style.width = `${mediaItems.length * 250}px`; 
 
-    function showFilmStripImage() {
-        // Move images based on the index
+    function showFilmStripMedia() {
+        // Move strip based on the index
         filmStrip.style.transform = `translateX(-${idx * 250}px)`;
-        idx = (idx + 1) % (imgs.length - 1); // Loop back to the first image (excluding the duplicate)
+        
+        // Loop back logic
+        // We use (length - 1) to determine the boundary, ensuring we cycle through
+        idx = (idx + 1) % (mediaItems.length);
     }
 
-    showFilmStripImage();
-    setInterval(showFilmStripImage, 4000); // Change image every 4 seconds
+    // Start movement immediately
+    // showFilmStripMedia(); // Optional: Start shifted if desired
+    
+    // Change item every 4 seconds
+    setInterval(showFilmStripMedia, 4000); 
 });
 
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-});
 
-const menuButton = document.querySelector('.menu-button');
-const navLinks = document.querySelector('.nav-links');
-let menuVisible = false;
-
-menuButton.addEventListener('click', () => {
-    menuVisible = !menuVisible;
-    menuButton.classList.toggle('active', menuVisible);
-    navLinks.style.display = menuVisible ? 'flex' : 'none';
-});
-
-window.addEventListener('scroll', () => {
-    if (menuVisible) {
-        menuVisible = false;
-        navLinks.style.display = 'none';
-        menuButton.classList.remove('active');
-    }
-});
-
-// BOOKING MODAL LOGIC (from WhatsappForm V2.html)
+// --- Modal & Booking Logic ---
 document.addEventListener('DOMContentLoaded', function() {
-    const serviceBookBtns = document.querySelectorAll('.service-book-btn');
-    const bookingModal = document.getElementById('bookingModal'); // Make sure this targets your modal
-    const closeModal = document.getElementById('closeModal'); // This line already exists and targets the button
+    const bookButtons = document.querySelectorAll('.btn-book, .btn-secondary'); // Also the 'Book a Session' button in Hero
+    const bookingModal = document.getElementById('bookingModal');
+    const closeModal = document.querySelector('.close-x');
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
-    const serviceOptions = document.querySelectorAll('.service-option');
-    const sendBookingBtn = document.getElementById('sendBookingBtn');
+    const optionChips = document.querySelectorAll('.option-chip');
+    const sendBtn = document.getElementById('sendBookingBtn');
     const userInfoForm = document.getElementById('userInfoForm');
-    const businessWhatsAppNumber = '254115411167';
 
-    let lastScrollY = 0;
+    let selectedService = "";
 
-    // Open modal when a service button is clicked
-    serviceBookBtns.forEach(button => {
-        button.addEventListener('click', function() {
-            lastScrollY = window.scrollY; // Save scroll position
-            const serviceName = this.getAttribute('data-service');
-            // Select the corresponding service option in the modal
-            serviceOptions.forEach(option => {
-                option.classList.remove('selected');
-                if (option.getAttribute('data-service') === serviceName) {
-                    option.classList.add('selected');
-                }
-            });
-            // Ensure quick-book tab is active
-            tabBtns[0].click();
+    // Open Modal
+    bookButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent anchor jump
             bookingModal.classList.add('active');
+            
+            // Pre-select service if clicked from a service card
+            const serviceData = this.getAttribute('data-service');
+            if (serviceData) {
+                selectedService = serviceData;
+                highlightChip(selectedService);
+            }
         });
     });
 
-    // Tab switching
+    // Tab Switching
     tabBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            tabBtns.forEach(tb => tb.classList.remove('active-tab'));
-            this.classList.add('active-tab');
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            this.classList.add('active');
             const tabId = this.getAttribute('data-tab');
-            tabContents.forEach(content => content.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
         });
     });
 
-    // Service selection
-    serviceOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            serviceOptions.forEach(opt => opt.classList.remove('selected'));
+    // Chip Selection
+    optionChips.forEach(chip => {
+        chip.addEventListener('click', function() {
+            // Toggle selection logic (single select here)
+            optionChips.forEach(c => c.classList.remove('selected'));
             this.classList.add('selected');
+            selectedService = this.getAttribute('data-value');
         });
     });
 
-    // Send booking via WhatsApp
-    sendBookingBtn.addEventListener('click', function() {
-        const name = document.getElementById('name').value;
-        const phone = document.getElementById('phone').value;
+    function highlightChip(serviceName) {
+        optionChips.forEach(chip => {
+            if (chip.getAttribute('data-value') === serviceName) {
+                chip.classList.add('selected');
+            } else {
+                chip.classList.remove('selected');
+            }
+        });
+    }
+
+    // Send to WhatsApp
+    sendBtn.addEventListener('click', function() {
+        const name = document.getElementById('userName').value.trim();
+        const phone = document.getElementById('userPhone').value.trim();
+        const businessWhatsAppNumber = "254797296255"; // Your Number
+
         if (!name || !phone) {
-            alert('Please enter your name and phone number.');
+            alert("Please enter your name and phone number.");
             return;
         }
-        const activeTab = document.querySelector('.tab-content.active').id;
-        let whatsappMessage = '';
+
+        // Determine which tab is active to construct message
+        const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
+        let whatsappMessage = "";
+
         if (activeTab === 'quick-book') {
-            const selectedServiceElement = document.querySelector('.service-option.selected');
-            const selectedService = selectedServiceElement ? selectedServiceElement.getAttribute('data-service') : 'Not specified';
-            const date = document.getElementById('date').value;
-            const time = document.getElementById('time').value;
+            const date = document.getElementById('preferredDate').value;
+            const time = document.getElementById('preferredTime').value;
             const notes = document.getElementById('notes').value;
-            whatsappMessage = `Hello Dog Tales Kennels! I'd like to inquire about your services.\n\n` +
+
+            whatsappMessage = 
+                `Hello Dog Tales Kennels! I would like to book a session.\n\n` +
                 `*Name:* ${name}\n` +
                 `*Phone:* ${phone}\n` +
                 `*Service of Interest:* ${selectedService}\n` +
@@ -146,12 +180,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const customMessage = document.getElementById('message').value;
             whatsappMessage = `Hello Dog Tales Kennels! This is ${name} (${phone}).\n\n` + customMessage;
         }
+        
         const encodedMessage = encodeURIComponent(whatsappMessage);
         window.open(`https://wa.me/${businessWhatsAppNumber}?text=${encodedMessage}`, '_blank');
+        
+        // Optional: Close modal after sending
         bookingModal.classList.remove('active');
         userInfoForm.reset();
-        serviceOptions.forEach(opt => opt.classList.remove('selected'));
-        tabBtns[0].click();
+        optionChips.forEach(opt => opt.classList.remove('selected'));
+        tabBtns[0].click(); // Reset to first tab
     });
 
     // Close modal with close button (no scroll)
@@ -172,4 +209,24 @@ document.addEventListener('DOMContentLoaded', function() {
             bookingModal.classList.remove('active');
         }
     });
+
+    // --- Floating Contact Button Logic ---
+    const contactToggle = document.getElementById('contactToggle');
+    const contactWrapper = document.querySelector('.floating-contact');
+
+    if (contactToggle && contactWrapper) {
+        contactToggle.addEventListener('click', function() {
+            contactWrapper.classList.toggle('active');
+            
+            // Toggle icon
+            const icon = this.querySelector('i');
+            if (contactWrapper.classList.contains('active')) {
+                icon.classList.remove('fa-comment-dots');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-comment-dots');
+            }
+        });
+    }
 });
