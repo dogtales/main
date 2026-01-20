@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Tales Kennel - Technical Difficulties</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7ecdb;
+            color: #3E2723;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #8D6E63;
+        }
+        p {
+            font-size: 1.2rem;
+            margin: 20px 0;
+        }
+        .contact-info {
+            margin-top: 30px;
+            font-size: 1rem;
+        }
+        footer {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: grey;
+        }
+        .logo {
+            width: 150px; /* Adjust the size of the logo */
+            margin-bottom: 20px;
+        }
+        .whatsapp-button, .youtube-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366; /* WhatsApp color */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .whatsapp-button:hover {
+            background-color: #128C7E;
+            transform: translateY(-10px);
+        }
+        .youtube-button {
+            right: 90px; /* Adjusted position for YouTube button */
+            background-color: #FF0000; /* YouTube color */
+        }
+        .youtube-button:hover {
+            background-color: #C8102E;
+            transform: translateY(-10px);
+        }
+        .whatsapp-tooltip, .youtube-tooltip {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: none;
+            z-index: 1001;
+        }
+        .whatsapp-tooltip {
+            background-color: #25D366;
+        }
+        .youtube-tooltip {
+            background-color: #FF0000;
+        }
+        .whatsapp-button:hover .whatsapp-tooltip,
+        .youtube-button:hover .youtube-tooltip {
+            display: block;
+        }
+        /* Image styling for buttons */
+        .button-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://github.com/kenjin32icon/dogtales/blob/main/Screenshot_from_2025-04-21_17-07-39-removebg-preview.png?raw=true" alt="Dog Tales Kennel Logo" class="logo"> <!-- Replace with actual logo URL -->
+        <h1>Dog Tales Kennel</h1>
+    </header>
+    <main>
+        <h1>We're Currently Under Construction</h1>
+        <p>We sincerely apologize for the inconvenience. Our team is diligently working to resolve the issues and improve your experience.</p>
+        <p> Unfortunately due to some delays the resolution time has slightly extended</p>
+        <p>Estimated time for resolution: <strong>3 days</strong></p>
+        <p>If you have urgent inquiries, please contact us at:</p>
+        <div class="contact-info">
+            <p>📧 <a href="mailto:dogtaleskennels@gmail.com">dogtaleskennels@gmail.com</a></p>
+            <p>📱 +254 115 411167</p>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Dog Tales Kennel. All rights reserved.</p>
+    </footer>
+
+    <a href="https://wa.me/254115411167" class="whatsapp-button" target="_blank">
+        <img src="https://github.com/kenjin32icon/dogtales/blob/main/WhatsApp%20Image%202025-05-09%20at%202.07.45%20PM(1).jpeg?raw=true" alt="WhatsApp" class="button-image">
+        <div class="whatsapp-tooltip">WhatsApp Us</div>
+    </a>
+
+    <a href="https://www.youtube.com/@Mawagidoo" class="youtube-button" target="_blank">
+        <img src="https://github.com/kenjin32icon/dogtales/blob/main/Untitled.png?raw=true" alt="YouTube" class="button-image">
+        <div class="youtube-tooltip">Follow us</div>
+    </a>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
